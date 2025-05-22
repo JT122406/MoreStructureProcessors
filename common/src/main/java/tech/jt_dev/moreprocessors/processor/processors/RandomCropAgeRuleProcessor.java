@@ -1,12 +1,13 @@
 package tech.jt_dev.moreprocessors.processor.processors;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -14,35 +15,38 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.jt_dev.moreprocessors.processor.ProcessorRegister;
+import tech.jt_dev.moreprocessors.processor.processors.rules.StateLessProcessorRule;
+
+import java.util.List;
 
 /**
  * Processor that sets the age of a crop block to a random value
  * @see StructureProcessor
  * @author Joseph T. McQuigg
  */
-public class RandomCropAgeProcessor extends StructureProcessor {
+public class RandomCropAgeRuleProcessor extends StructureProcessor {
 
-    public static final MapCodec<RandomCropAgeProcessor> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("crop").forGetter((block) -> block.crop)
-    ).apply(instance, RandomCropAgeProcessor::new));
+    public static final MapCodec<RandomCropAgeRuleProcessor> CODEC = StateLessProcessorRule.CODEC
+            .listOf()
+            .fieldOf("rules")
+            .xmap(RandomCropAgeRuleProcessor::new, arg -> arg.rules);
 
-    private final CropBlock crop;
+    private final ImmutableList<StateLessProcessorRule> rules;
 
-    private RandomCropAgeProcessor(Block block) {
-        if (!(block instanceof CropBlock cropBlock))
-            throw new IllegalArgumentException("Block must be a crop block");
-        this.crop = cropBlock;
-    }
-
-    public RandomCropAgeProcessor(CropBlock crop) {
-        this.crop = crop;
+    public RandomCropAgeRuleProcessor(List<? extends StateLessProcessorRule> rules) {
+        this.rules = ImmutableList.copyOf(rules);
     }
 
     @Override
     public @Nullable StructureTemplate.StructureBlockInfo processBlock(@NotNull LevelReader level, @NotNull BlockPos offset, @NotNull BlockPos pos, StructureTemplate.@NotNull StructureBlockInfo blockInfo, StructureTemplate.@NotNull StructureBlockInfo relativeBlockInfo, @NotNull StructurePlaceSettings settings) {
         BlockPos relPos = relativeBlockInfo.pos();
-        if (level.getBlockState(relPos).is(crop))
-            return new StructureTemplate.StructureBlockInfo(relPos, crop.getStateForAge(settings.getRandom(relPos).nextInt(crop.getMaxAge())), relativeBlockInfo.nbt());
+        RandomSource randomSource = RandomSource.create(Mth.getSeed(relPos));
+        BlockState blockState = level.getBlockState(relPos);
+
+        for (StateLessProcessorRule processorRule : rules)
+            if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relativeBlockInfo.pos(), pos, randomSource) && processorRule.getOutputBlock() instanceof CropBlock crop)
+                return new StructureTemplate.StructureBlockInfo(relPos, crop.getStateForAge(settings.getRandom(relPos).nextInt(crop.getMaxAge())), relativeBlockInfo.nbt());
+
         return relativeBlockInfo;
     }
 

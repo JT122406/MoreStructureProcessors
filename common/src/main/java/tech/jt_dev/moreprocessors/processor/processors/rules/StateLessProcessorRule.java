@@ -17,10 +17,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.rule.blockent
 
 import javax.annotation.Nullable;
 
-public class SameStateProcessorRule {
+public class StateLessProcessorRule {
 
     public static final Passthrough DEFAULT_BLOCK_ENTITY_MODIFIER = Passthrough.INSTANCE;
-    public static final Codec<SameStateProcessorRule> CODEC = RecordCodecBuilder.create(
+    public static final Codec<StateLessProcessorRule> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             RuleTest.CODEC.fieldOf("input_predicate").forGetter(arg -> arg.inputPredicate),
                             RuleTest.CODEC.fieldOf("location_predicate").forGetter(arg -> arg.locPredicate),
@@ -28,7 +28,7 @@ public class SameStateProcessorRule {
                             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("output_location").forGetter(arg -> arg.outputBlock),
                             RuleBlockEntityModifier.CODEC.optionalFieldOf("block_entity_modifier", DEFAULT_BLOCK_ENTITY_MODIFIER).forGetter(arg -> arg.blockEntityModifier)
                     )
-                    .apply(instance, SameStateProcessorRule::new)
+                    .apply(instance, StateLessProcessorRule::new)
     );
 
     private final RuleTest inputPredicate;
@@ -37,7 +37,7 @@ public class SameStateProcessorRule {
     private final Block outputBlock;
     private final RuleBlockEntityModifier blockEntityModifier;
 
-    public SameStateProcessorRule(RuleTest inputPredicate, RuleTest locPredicate, PosRuleTest posPredicate, Block outputBlock, RuleBlockEntityModifier blockEntityModifier) {
+    public StateLessProcessorRule(RuleTest inputPredicate, RuleTest locPredicate, PosRuleTest posPredicate, Block outputBlock, RuleBlockEntityModifier blockEntityModifier) {
         this.inputPredicate = inputPredicate;
         this.locPredicate = locPredicate;
         this.posPredicate = posPredicate;
@@ -45,16 +45,16 @@ public class SameStateProcessorRule {
         this.blockEntityModifier = blockEntityModifier;
     }
 
-    public SameStateProcessorRule(RuleTest inputPredicate, RuleTest locPredicate, Block outputBlock) {
+    public StateLessProcessorRule(RuleTest inputPredicate, RuleTest locPredicate, Block outputBlock) {
         this(inputPredicate, locPredicate, PosAlwaysTrueTest.INSTANCE, outputBlock, DEFAULT_BLOCK_ENTITY_MODIFIER);
     }
 
-    public SameStateProcessorRule(RuleTest inputPredicate, Block outputBlock) {
+    public StateLessProcessorRule(RuleTest inputPredicate, Block outputBlock) {
         this(inputPredicate, AlwaysTrueTest.INSTANCE, PosAlwaysTrueTest.INSTANCE, outputBlock, DEFAULT_BLOCK_ENTITY_MODIFIER);
     }
 
     public boolean test(BlockState inputState, BlockState existingState, BlockPos localPos, BlockPos relativePos, BlockPos structurePos, RandomSource random) {
-        return  this.inputPredicate.test(inputState, random)
+        return this.inputPredicate.test(inputState, random)
                 && this.locPredicate.test(existingState, random)
                 && this.posPredicate.test(localPos, relativePos, structurePos, random);
     }

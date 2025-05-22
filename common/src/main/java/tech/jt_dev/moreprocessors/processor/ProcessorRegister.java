@@ -20,7 +20,7 @@ public class ProcessorRegister {
 
     public static final Supplier<StructureProcessorType<PlaceOnTopProcessor>> PLACE_ON_TOP_PROCESSOR = register("place_on_top", () -> PlaceOnTopProcessor.CODEC);
     public static final Supplier<StructureProcessorType<PlaceBelowProcessor>> PLACE_BELOW_PROCESSOR = register("place_below", () -> PlaceBelowProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<RandomCropAgeProcessor>> RANDOM_CROP_AGE_PROCESSOR = register("random_crop_age", () -> RandomCropAgeProcessor.CODEC);
+    public static final Supplier<StructureProcessorType<RandomCropAgeRuleProcessor>> RANDOM_CROP_AGE_PROCESSOR = register("random_crop_age", () -> RandomCropAgeRuleProcessor.CODEC);
     public static final Supplier<StructureProcessorType<RandomCropRandomAgeProcessor>> RANDOM_CROP_RANDOM_AGE_PROCESSOR = register("random_crop_random_age", () -> RandomCropRandomAgeProcessor.CODEC);
     public static final Supplier<StructureProcessorType<CompatRuleProcessor>> COMPAT_RULE = register("compat_rule", () -> CompatRuleProcessor.CODEC);
     public static final Supplier<StructureProcessorType<SameStateCompatRuleProcessor>> SAME_STATE_COMPAT_RULE = register("same_state_compat_rule", () -> SameStateCompatRuleProcessor.CODEC);

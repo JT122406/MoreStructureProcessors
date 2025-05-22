@@ -15,20 +15,20 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.jt_dev.moreprocessors.processor.ProcessorRegister;
-import tech.jt_dev.moreprocessors.processor.processors.rules.DirectionalProcessorRule;
+import tech.jt_dev.moreprocessors.processor.processors.rules.StateLessProcessorRule;
 
 import java.util.List;
 
 public class DirectionalRuleProcessor extends StructureProcessor {
 
-    public static final MapCodec<DirectionalRuleProcessor> CODEC = DirectionalProcessorRule.CODEC
+    public static final MapCodec<DirectionalRuleProcessor> CODEC = StateLessProcessorRule.CODEC
             .listOf()
             .fieldOf("rules")
             .xmap(DirectionalRuleProcessor::new, arg -> arg.rules);
 
-    private final ImmutableList<DirectionalProcessorRule> rules;
+    private final ImmutableList<StateLessProcessorRule> rules;
 
-    public DirectionalRuleProcessor(List<? extends DirectionalProcessorRule> rules) {
+    public DirectionalRuleProcessor(List<? extends StateLessProcessorRule> rules) {
         this.rules = ImmutableList.copyOf(rules);
     }
 
@@ -37,8 +37,8 @@ public class DirectionalRuleProcessor extends StructureProcessor {
         RandomSource randomSource = RandomSource.create(Mth.getSeed(relativeBlockInfo.pos()));
         BlockState blockState = level.getBlockState(relativeBlockInfo.pos());
 
-        for (DirectionalProcessorRule processorRule : this.rules)
-            if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relativeBlockInfo.pos(), pos, randomSource))
+        for (StateLessProcessorRule processorRule : this.rules)
+            if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relativeBlockInfo.pos(), pos, randomSource) && processorRule.getOutputBlock().defaultBlockState().hasProperty(BlockStateProperties.FACING))
                 return new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(), processorRule.getOutputBlock().defaultBlockState().setValue(BlockStateProperties.FACING, blockState.getValue(BlockStateProperties.FACING)), processorRule.getOutputTag(randomSource, relativeBlockInfo.nbt()));
 
         return relativeBlockInfo;

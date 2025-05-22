@@ -14,20 +14,20 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.jt_dev.moreprocessors.processor.ProcessorRegister;
-import tech.jt_dev.moreprocessors.processor.processors.rules.SameStateProcessorRule;
+import tech.jt_dev.moreprocessors.processor.processors.rules.StateLessProcessorRule;
 
 import java.util.List;
 
 public class SameStateRuleProcessor extends StructureProcessor {
 
-    public static final MapCodec<SameStateRuleProcessor> CODEC = SameStateProcessorRule.CODEC
+    public static final MapCodec<SameStateRuleProcessor> CODEC = StateLessProcessorRule.CODEC
             .listOf()
             .fieldOf("rules")
             .xmap(SameStateRuleProcessor::new, arg -> arg.rules);
 
-    private final ImmutableList<SameStateProcessorRule> rules;
+    private final ImmutableList<StateLessProcessorRule> rules;
 
-    public SameStateRuleProcessor(List<? extends SameStateProcessorRule> rules) {
+    public SameStateRuleProcessor(List<? extends StateLessProcessorRule> rules) {
         this.rules = ImmutableList.copyOf(rules);
     }
 
@@ -36,7 +36,7 @@ public class SameStateRuleProcessor extends StructureProcessor {
         RandomSource randomSource = RandomSource.create(Mth.getSeed(relativeBlockInfo.pos()));
         BlockState blockState = level.getBlockState(relativeBlockInfo.pos());
 
-        for (SameStateProcessorRule processorRule : this.rules)
+        for (StateLessProcessorRule processorRule : this.rules)
             if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relativeBlockInfo.pos(), pos, randomSource))
                 return new StructureTemplate.StructureBlockInfo(relativeBlockInfo.pos(), processorRule.getOutputBlock().withPropertiesOf(relativeBlockInfo.state()), processorRule.getOutputTag(randomSource, relativeBlockInfo.nbt()));
 

@@ -1,3 +1,6 @@
+# 3.0.0
+- Update to 1.21.4
+
 # 2.0.1
 - Loom 1.10
 - Add Issues link (Fabric)

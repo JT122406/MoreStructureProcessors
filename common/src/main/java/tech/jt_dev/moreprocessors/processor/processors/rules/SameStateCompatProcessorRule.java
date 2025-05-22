@@ -70,7 +70,7 @@ public class SameStateCompatProcessorRule {
     }
 
     public Block getOutputBlock() {
-        return BuiltInRegistries.BLOCK.get(outputLocation);
+        return BuiltInRegistries.BLOCK.get(outputLocation).orElseThrow().value();
     }
 
 

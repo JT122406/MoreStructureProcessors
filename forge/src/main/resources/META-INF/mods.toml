@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[52,)"
+loaderVersion = "[54,)"
 issueTrackerURL = "https://github.com/JT122406/MoreStructureProcessors/issues"
 license = "All Rights Reserved"
 
@@ -16,13 +16,13 @@ logoFile = "icon.png"
 [[dependencies.moreprocessors]]
 modId = "forge"
 mandatory = true
-versionRange = "[52,)"
+versionRange = "[54,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.moreprocessors]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.1]"
+versionRange = "[1.21.4]"
 ordering = "NONE"
 side = "BOTH"

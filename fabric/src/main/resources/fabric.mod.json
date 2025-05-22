@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://github.com/JT122406",
-    "sources": "https://github.com/JT122406/MoreStructureProcessors"
+    "sources": "https://github.com/JT122406/MoreStructureProcessors",
+    "issues": "https://github.com/JT122406/MoreStructureProcessors/issues"
   },
   "license": "All Rights Reserved",
   "icon": "icon.png",

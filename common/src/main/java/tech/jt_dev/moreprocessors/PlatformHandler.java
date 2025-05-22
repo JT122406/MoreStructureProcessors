@@ -7,12 +7,12 @@ import java.util.function.Supplier;
 
 public interface PlatformHandler {
 
-    PlatformHandler PLATFORM_HANDLER = load(PlatformHandler.class);
+    PlatformHandler PLATFORM_HANDLER = load();
 
-    private static <T> T load(Class<T> clazz) {
-        return ServiceLoader.load(clazz)
+    private static PlatformHandler load() {
+        return ServiceLoader.load(PlatformHandler.class)
                 .findFirst()
-                .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
+                .orElseThrow(() -> new NullPointerException("Failed to load service for " + PlatformHandler.class.getName()));
     }
 
     <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value);

@@ -1,3 +1,8 @@
+# 1.2.2
+- Loom 1.10
+- Add Issues link (Fabric)
+- Remove Generic Type in PlatformHandler
+
 # 1.2.1
 - Remove Deprecation on PlaceBelow and OnTop Processors
 - Add RandomCropRandomAgeProcessor

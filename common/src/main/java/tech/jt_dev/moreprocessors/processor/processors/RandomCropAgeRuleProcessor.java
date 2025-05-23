@@ -44,7 +44,7 @@ public class RandomCropAgeRuleProcessor extends StructureProcessor {
         BlockState blockState = level.getBlockState(relPos);
 
         for (StateLessProcessorRule processorRule : rules)
-            if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relativeBlockInfo.pos(), pos, randomSource) && processorRule.getOutputBlock() instanceof CropBlock crop)
+            if (processorRule.test(relativeBlockInfo.state(), blockState, blockInfo.pos(), relPos, pos, randomSource) && processorRule.getOutputBlock() instanceof CropBlock crop)
                 return new StructureTemplate.StructureBlockInfo(relPos, crop.getStateForAge(settings.getRandom(relPos).nextInt(crop.getMaxAge())), relativeBlockInfo.nbt());
 
         return relativeBlockInfo;
